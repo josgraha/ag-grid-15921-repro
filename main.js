@@ -81,7 +81,13 @@ document.querySelector('#applyPivot').addEventListener('click', () => {
   api.setGridOption('pivotMode', true);
   api.applyColumnState(savedPivotState);
 });
-document.querySelector('#autoSize').addEventListener('click', () => api.autoSizeAllColumns());
+// Workaround: any change to a header height option makes the grid recompute the header height.
+// Nudge one and put it back; column widths are untouched.
+document.querySelector('#recompute').addEventListener('click', () => {
+  const height = api.getGridOption('floatingFiltersHeight');
+  api.setGridOption('floatingFiltersHeight', (height ?? 0) + 1);
+  api.setGridOption('floatingFiltersHeight', height);
+});
 document.querySelector('#reset').addEventListener('click', () => {
   api.destroy();
   api = agGrid.createGrid(gridDiv, gridOptions);
